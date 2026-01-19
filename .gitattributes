@@ -43,6 +43,6 @@
 *.mov filter=lfs diff=lfs merge=lfs -text
 *.MOV filter=lfs diff=lfs merge=lfs -text
 
-# Специфично для папок библиотек - все файлы в этих папках через LFS
-Assets/Kevin Iglesias/** filter=lfs diff=lfs merge=lfs -text
-Assets/TriForge Assets/** filter=lfs diff=lfs merge=lfs -text
+# Примечание: Все файлы в папках библиотек Kevin Iglesias и TriForge Assets
+# уже покрыты правилами выше по расширениям файлов (fbx, png, jpg, unitypackage и т.д.)
+# Git attributes не поддерживает пути с пробелами напрямую
