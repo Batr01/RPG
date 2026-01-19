@@ -58,7 +58,7 @@ sysinfo.txt
 # Builds
 *.apk
 *.aab
-*.unitypackage
+# *.unitypackage - отслеживается через Git LFS в .gitattributes
 *.app
 
 # Crashlytics generated file
