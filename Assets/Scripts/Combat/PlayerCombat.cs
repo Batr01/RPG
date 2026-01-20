@@ -26,6 +26,9 @@ namespace RPG.Player
         [SerializeField] private LayerMask enemyLayer;
         [SerializeField] private DamageDealer weaponDamageDealer;
 
+        [Header("VFX Settings")]
+        [SerializeField] private SwordAttackVFX swordVFX;
+
         private PlayerAnimationController _animationController;
         private int _currentComboIndex = 0;
         private float _lastAttackTime = 0f;
@@ -102,6 +105,12 @@ namespace RPG.Player
             // Установка индекса комбо и триггер анимации
             _animationController.SetComboIndex(_currentComboIndex);
             _animationController.TriggerAttack();
+
+            // Установить цвет VFX эффекта в зависимости от комбо-индекса
+            if (swordVFX != null)
+            {
+                swordVFX.SetComboColor(_currentComboIndex);
+            }
 
             Debug.Log($"Executing attack - Combo Index: {_currentComboIndex}, Display: {_currentComboIndex + 1}/{maxComboCount}, Damage: {totalDamage} (x{damageMultiplier})");
         }
@@ -257,6 +266,17 @@ namespace RPG.Player
             {
                 weaponDamageDealer.Activate();
             }
+
+            // Активировать VFX эффект
+            if (swordVFX != null)
+            {
+                swordVFX.PlayAttackEffect();
+                Debug.Log("PlayerCombat: OnAttackStart вызван, VFX активирован");
+            }
+            else
+            {
+                Debug.LogWarning("PlayerCombat: swordVFX не назначен! Проверьте ссылку в Inspector.");
+            }
         }
 
         /// <summary>
@@ -267,6 +287,12 @@ namespace RPG.Player
             if (weaponDamageDealer != null)
             {
                 weaponDamageDealer.Deactivate();
+            }
+
+            // Остановить VFX эффект
+            if (swordVFX != null)
+            {
+                swordVFX.StopAttackEffect();
             }
         }
 
