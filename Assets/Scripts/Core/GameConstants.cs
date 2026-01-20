@@ -36,6 +36,26 @@ namespace RPG.Core
         /// Тег анимации атаки для Animator
         /// </summary>
         public const string ATTACK_ANIMATION_TAG = "Attack";
+
+        /// <summary>
+        /// Урон игрока по умолчанию
+        /// </summary>
+        public const float DEFAULT_PLAYER_DAMAGE = 10f;
+
+        /// <summary>
+        /// Урон врага по умолчанию
+        /// </summary>
+        public const float DEFAULT_ENEMY_DAMAGE = 15f;
+
+        /// <summary>
+        /// Здоровье игрока по умолчанию
+        /// </summary>
+        public const float DEFAULT_PLAYER_HEALTH = 100f;
+
+        /// <summary>
+        /// Здоровье врага по умолчанию
+        /// </summary>
+        public const float DEFAULT_ENEMY_HEALTH = 50f;
         
         #endregion
 
@@ -133,6 +153,30 @@ namespace RPG.Core
         
         #endregion
 
+        #region Enemy Constants
+
+        /// <summary>
+        /// Тег врага для поиска через GameObject.FindGameObjectWithTag
+        /// </summary>
+        public const string ENEMY_TAG = "Enemy";
+
+        /// <summary>
+        /// Радиус обнаружения игрока по умолчанию
+        /// </summary>
+        public const float ENEMY_DETECTION_RADIUS = 10f;
+
+        /// <summary>
+        /// Радиус атаки врага по умолчанию
+        /// </summary>
+        public const float ENEMY_ATTACK_RADIUS = 2f;
+
+        /// <summary>
+        /// Скорость движения врага по умолчанию
+        /// </summary>
+        public const float ENEMY_MOVE_SPEED = 3f;
+
+        #endregion
+
         #region Layers
         
         /// <summary>
@@ -145,6 +189,8 @@ namespace RPG.Core
             public const int ENEMY = 9;
             public const int GROUND = 10;
             public const int INTERACTABLE = 11;
+            public const int PLAYER_WEAPON = 12;
+            public const int ENEMY_WEAPON = 13;
         }
         
         #endregion

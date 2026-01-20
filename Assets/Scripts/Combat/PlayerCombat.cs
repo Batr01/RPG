@@ -1,5 +1,6 @@
 using UnityEngine;
 using RPG.Core;
+using RPG.Combat;
 
 namespace RPG.Player
 {
@@ -19,6 +20,12 @@ namespace RPG.Player
         [Header("Attack Settings")]
         [SerializeField] private float attackCooldown = 0.1f;
 
+        [Header("Damage Settings")]
+        [SerializeField] private float baseDamage = 10f;
+        [SerializeField] private float[] comboDamageMultipliers = { 1f, 1.5f, 2f };
+        [SerializeField] private LayerMask enemyLayer;
+        [SerializeField] private DamageDealer weaponDamageDealer;
+
         private PlayerAnimationController _animationController;
         private int _currentComboIndex = 0;
         private float _lastAttackTime = 0f;
@@ -33,6 +40,16 @@ namespace RPG.Player
         private void Awake()
         {
             _animationController = GetComponent<PlayerAnimationController>();
+            
+            // Инициализировать DamageDealer если он назначен
+            if (weaponDamageDealer != null)
+            {
+                weaponDamageDealer.Initialize(baseDamage, enemyLayer);
+            }
+            else
+            {
+                Debug.LogWarning("DamageDealer не назначен в PlayerCombat! Урон не будет наноситься.");
+            }
         }
 
         private void Update()
@@ -72,11 +89,21 @@ namespace RPG.Player
             _lastAttackTime = Time.time;
             _comboResetTimer = comboResetTime;
 
+            // Рассчитать урон с учетом комбо-множителя
+            float damageMultiplier = GetDamageMultiplier();
+            float totalDamage = baseDamage * damageMultiplier;
+
+            // Обновить урон в DamageDealer
+            if (weaponDamageDealer != null)
+            {
+                weaponDamageDealer.SetDamage(totalDamage);
+            }
+
             // Установка индекса комбо и триггер анимации
             _animationController.SetComboIndex(_currentComboIndex);
             _animationController.TriggerAttack();
 
-            Debug.Log($"Executing attack - Combo Index: {_currentComboIndex}, Display: {_currentComboIndex + 1}/{maxComboCount}");
+            Debug.Log($"Executing attack - Combo Index: {_currentComboIndex}, Display: {_currentComboIndex + 1}/{maxComboCount}, Damage: {totalDamage} (x{damageMultiplier})");
         }
 
         /// <summary>
@@ -203,6 +230,47 @@ namespace RPG.Player
         {
             return (float)_currentComboIndex / maxComboCount;
         }
+
+        /// <summary>
+        /// Получить множитель урона для текущего комбо
+        /// </summary>
+        private float GetDamageMultiplier()
+        {
+            if (comboDamageMultipliers == null || comboDamageMultipliers.Length == 0)
+            {
+                return 1f;
+            }
+
+            // Убедиться, что индекс в пределах массива
+            int index = Mathf.Min(_currentComboIndex, comboDamageMultipliers.Length - 1);
+            return comboDamageMultipliers[index];
+        }
+
+        #region Animation Events
+
+        /// <summary>
+        /// Вызывается из Animation Event - начало активной фазы удара
+        /// </summary>
+        public void OnAttackStart()
+        {
+            if (weaponDamageDealer != null)
+            {
+                weaponDamageDealer.Activate();
+            }
+        }
+
+        /// <summary>
+        /// Вызывается из Animation Event - конец активной фазы удара
+        /// </summary>
+        public void OnAttackEnd()
+        {
+            if (weaponDamageDealer != null)
+            {
+                weaponDamageDealer.Deactivate();
+            }
+        }
+
+        #endregion
 
         #region Debug
         
